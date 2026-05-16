@@ -1,0 +1,117 @@
+---
+title: "Phase Transitions"
+---
+<div class="page">
+<div class="stepLog twoColumn">
+
+<script>
+    var sim = createSimulation({
+        initialize: function(simulation) {
+			var p = simulation.parameters;
+			p.thermostatDeterministicStrength = 1;
+			p.thermostatTemperature = 0.5;
+			setBoxWidth(simulation, 50);
+			setWallsAlongBorder(simulation);
+
+            var particleCount = 37;
+            for (var particleIndex = 0; particleIndex < particleCount; particleIndex++) {
+                var particle = new Particle();
+                hexagonalLatticePosition(particle.position, particleIndex, 2);
+                addParticle(simulation, particle);
+            }
+
+            var displacement = v2.alloc();
+            var displacementMagnitude = 0.01;
+            for (var particleIndex = 0; particleIndex < simulation.particles.length; particleIndex++) {
+                var particle = simulation.particles[particleIndex];
+                v2.set(displacement, randomGaussian(), randomGaussian());
+                v2.scaleAndAdd(particle.position, particle.position, 
+                    displacement, displacementMagnitude);
+            }
+            v2.free(displacement);
+
+            var ljInteraction = new LennardJonesInteraction();
+            ljInteraction.strength = 10;
+            setInteraction(simulation, 0, 0, ljInteraction);
+
+            setToolbarAvailableTools(simulation.toolbar, ["move"]);
+        }
+    });
+</script>
+
+<h2>Phase Transitions</h2>
+
+<p>The van der Waals equation predicts something the ideal gas law cannot: <strong>phase transitions</strong>.</p>
+
+<p>The particles on the right start as a <strong>solid</strong>, locked in a crystal lattice, barely jiggling.</p>
+
+<p>Slowly increase the temperature using the <strong>+</strong> and <strong>−</strong> buttons below.</p>
+
+<script>
+	createIncrementControlHere({
+		initialValue: 0.5,
+		min: 0, max: 50,
+		step: 2,
+		label: "Temperature",
+		update: function (value)
+		{
+			sim.parameters.thermostatTemperature = value;
+		}
+	});
+</script>
+
+<script>
+    cue(function()
+    {
+        return (sim.parameters.thermostatTemperature > 0.5);
+    });
+    endStep();
+</script>
+
+<p>The particles jiggle in place; they're a <strong>solid</strong>.</p>
+
+<p>Keep increasing the temperature.</p>
+
+<script>
+    cue(function()
+    {
+        return (sim.parameters.thermostatTemperature > 2.7);
+    });
+    endStep();
+</script>
+
+<p>The particles start "walking" around each other, losing their rigid structure. The solid is <strong>melting into a liquid</strong>.</p>
+
+<p>Keep going!</p>
+
+<script>
+    cue(function()
+    {
+        return (sim.parameters.thermostatTemperature > 5);
+    });
+    endStep();
+</script>
+
+<p>Particles start breaking free from the group entirely; the liquid is <strong>evaporating into a gas</strong>.</p>
+
+<script>
+    cue(function()
+    {
+        return (sim.parameters.thermostatTemperature > 12);
+    });
+    endStep();
+</script>
+
+<p>At high enough temperature, the particles bounce freely; attractions can't hold them together anymore. This is a <strong>gas</strong>.</p>
+
+<p>The ideal gas law only describes this last state. The van der Waals equation bridges the gap, explaining why real gases can condense when cooled and why there's a <strong>critical temperature</strong> above which a gas cannot be liquefied no matter the pressure.</p>
+
+<p class="next-page-prompt">When you're ready, proceed to the playground using the arrow on the right.</p>
+
+</div>
+<div class="twoColumn">
+<script>
+	insertHere(sim.div);
+</script>
+</div>
+</div>

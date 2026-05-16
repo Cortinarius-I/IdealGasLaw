@@ -1,0 +1,46 @@
+---
+title: "Temperature is Motion"
+---
+<div class="page">
+<div class="stepLog twoColumn">
+
+<script>
+    var sim = createSimulation({
+        initialize: function(simulation) {
+			var p = simulation.parameters;
+			p.isOnlyHardSpheres = true;
+			p.thermostatDeterministicStrength = 1;
+			p.thermostatTemperature = 5;
+			setBoxWidth(simulation, 80);
+			setWallsAlongBorder(simulation);
+
+			fillBoxWithParticles(simulation, 80, 5);
+
+			setToolbarAvailableTools(simulation.toolbar, ["move"]);
+        },
+    });
+</script>
+
+<h2>Temperature IS Motion</h2>
+
+<p>Temperature isn't some mysterious abstract quantity. It's simply a measure of <strong>how fast the particles are moving</strong>.</p>
+
+<div class="equation">T = ⅔ × (E<sub>avg</sub> / k<sub>B</sub>)</div>
+
+<p>Each particle has kinetic energy (½mv²). Temperature is the <strong>average</strong> energy of all particles, adjusted by two constants:</p>
+<ul>
+  <li><strong>k<sub>B</sub></strong> (Boltzmann constant) scales energy into Kelvin units.</li>
+  <li><strong>⅔</strong> comes from the fact that particles can move in three directions (up/down, left/right, back/forward).</li>
+</ul>
+
+<p>This is the kinetic theory of gases: <strong>temperature is motion, and motion is temperature</strong>. Watch the particles on the right; their average speed is directly proportional to the temperature of the gas.</p>
+
+<p class="next-page-prompt">When you're ready, proceed to the next page using the arrow on the right.</p>
+
+</div>
+<div class="twoColumn">
+<script>
+	insertHere(sim.div);
+</script>
+</div>
+</div>

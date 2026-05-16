@@ -1,0 +1,95 @@
+---
+title: "Pressure is Momentum"
+---
+<div class="page">
+<div class="stepLog twoColumn">
+
+<script>
+    var wallDetectorSim = createSimulation({
+        initialize: function(simulation) {
+            var p = simulation.parameters;
+			p.isOnlyHardSpheres = true;
+            p.dragStrength = 2;
+            p.pressureSmoothingTime = 2.5; // High smoothing to turn vibrations into a steady line
+			setBoxWidth(simulation, 40);
+			setWallsAlongBorder(simulation);
+
+            var particle = new Particle();
+			particle.radius = 2;
+            addParticle(simulation, particle);
+
+			setToolbarAvailableTools(simulation.toolbar, ["move"]);
+        },
+    });
+</script>
+
+<h2>Pressure IS Momentum Transfer</h2>
+
+<p>Let's zoom in on what pressure really means at the particle level.</p>
+
+<p>Here's a single, large particle. Throw it at a wall!</p>
+
+<script>
+	cue(function() {
+		var pressure = getTotalPressure(wallDetectorSim);
+		return (pressure > 1);
+	});
+	endStep();
+</script>
+
+<p>See that spike in the graph on the right? That's the <strong>momentum transfer</strong>. The particle hits the wall, reverses direction, and pushes the wall outward in the process.</p>
+
+<p>A harder throw = a bigger spike. Try throwing it faster! (If the ball is moving too fast to click on, you can always hit <strong>Reset</strong> to try again).</p>
+
+<script>
+	cue(function() {
+		var pressure = getTotalPressure(wallDetectorSim);
+		return (pressure > 25);
+	});
+	endStep();
+</script>
+
+<p>Now push the particle against the wall and hold it there.</p>
+
+<script>
+	var dragTime = 1.5;
+	var dragTimeLeft = dragTime;
+	cue(function(dt) {
+		var pressure = getTotalPressure(wallDetectorSim);
+		var isPushing = (pressure > 40) && (wallDetectorSim.mouse.activeParticle !== null);
+		
+		if (isPushing)
+		{
+			dragTimeLeft -= dt;
+		}
+		else
+		{
+			dragTimeLeft = dragTime;
+		}
+		return (dragTimeLeft <= 0);
+	});
+	endStep();
+</script>
+
+<p>Sustained pushing = sustained pressure. With a single particle you get spikes, but with <strong>many particles</strong> hitting the walls continuously, the spikes average out into a steady pressure reading.</p>
+
+<p>This is exactly what gas pressure is: the <strong>average force per unit area</strong> from countless molecular collisions, happening billions of times per second.</p>
+
+<p class="next-page-prompt">When you're ready, proceed to the next page using the arrow on the right.</p>
+
+</div>
+<div class="twoColumn">
+<script>
+	insertHere(wallDetectorSim.div);
+
+	createTimeSeriesHere({
+		title: "Pressure vs Time",
+		timeRange: 50,
+		yMax: 120,
+		update: function(graph) {
+			return {time: wallDetectorSim.time, data: [getTotalPressure(wallDetectorSim)]};
+		},
+	});
+</script>
+</div>
+</div>

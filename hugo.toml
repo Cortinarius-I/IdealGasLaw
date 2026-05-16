@@ -1,0 +1,5 @@
+baseURL = "/"
+locale = "en-us"
+title = "Beyond Ideal"
+
+disableKinds = ["taxonomy", "term", "section"]

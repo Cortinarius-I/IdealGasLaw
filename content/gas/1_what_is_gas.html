@@ -1,0 +1,91 @@
+---
+title: "What is a Gas?"
+---
+<div class="page">
+<div class="stepLog twoColumn">
+
+<script>
+    var sim = createSimulation({
+        initialize: function(simulation) {
+			var p = simulation.parameters;
+			p.isOnlyHardSpheres = true;
+			setBoxWidth(simulation, 80);
+			setWallsAlongBorder(simulation);
+
+			var particleCount = 100;
+			for (var i = 0; i < particleCount; i++) {
+				var particle = new Particle();
+				randomDiscInRect(particle.position, particle.radius, simulation.boxBounds);
+				v2.set(particle.velocity, randomGaussian(), randomGaussian());
+				v2.scale(particle.velocity, particle.velocity, 4);
+				addParticle(simulation, particle);
+			}
+
+			setToolbarAvailableTools(simulation.toolbar, ["move", "create"]);
+        },
+    });
+</script>
+
+<h2>Gas Basics: Particles in Motion</h2>
+
+<p>A <strong>gas</strong> is a collection of tiny particles, atoms or molecules, moving randomly in all directions.</p>
+
+<p>They bounce off each other and off the walls of their container. Between collisions, they travel in straight lines.</p>
+
+<p>Watch the particles on the right. Notice how they <strong>spread out to fill the entire box</strong>.</p>
+
+<script>
+	cue(function() {
+		return (sim.time > 5);
+	});
+	endStep();
+</script>
+
+<p>The graph on the right shows the <strong>pressure</strong> on the walls. Every time a particle bounces off a wall, it pushes on it. The combined effect of countless tiny pushes is what we call pressure.</p>
+
+<p>Try <strong>adding more particles</strong> with the create tool and watch what happens to the pressure.</p>
+
+<script>
+	cue(function() {
+		return (sim.particles.length > 150);
+	});
+	endStep();
+</script>
+
+<p>More particles → more wall collisions → <strong>higher pressure</strong>.</p>
+
+<p>Alternatively, you can increase pressure by injecting energy. Try <strong>Resetting</strong> the simulation, then use the move tool to grab a particle and <strong>throw it around very fast</strong>.</p>
+
+<script>
+	cue(function() {
+		return (sim.mouse.mode === MouseMode.move && getTotalPressure(sim) > 30);
+	});
+	endStep();
+</script>
+
+<p>By moving the particle faster, you increase its <strong>momentum</strong>, leading to more forceful collisions with the walls.</p>
+
+<p>This is the fundamental insight: macroscopic properties like pressure emerge from the collective behavior of many tiny particles. The <strong>ideal gas law</strong> captures this relationship mathematically.</p>
+
+<p style="margin-top: 3rem; color: var(--text-muted); font-size: 0.9rem; font-style: italic;">
+    Note: Because these simulations use time-averaged smoothing, changes in pressure are gradual. You may need to add a lot of particles to see a significant move on the graph. You can always hit <strong>Reset</strong> to clear the box and compare the baseline!
+</p>
+
+<p class="next-page-prompt">When you're ready, proceed to the next page using the arrow on the right.</p>
+
+</div>
+<div class="twoColumn">
+<script>
+	insertHere(sim.div);
+
+	createTimeSeriesHere({
+		title: "Pressure vs Time",
+		timeRange: 80,
+		yMax: 120,
+		update: function(graph) {
+			return {time: sim.time, data: [getTotalPressure(sim)]};
+		},
+	});
+</script>
+</div>
+</div>

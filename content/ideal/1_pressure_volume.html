@@ -1,0 +1,93 @@
+---
+title: "Pressure & Volume"
+---
+<div class="page">
+<div class="stepLog twoColumn">
+
+<script>
+    var sim = createSimulation({
+        initialize: function(simulation) {
+			var p = simulation.parameters;
+			p.isOnlyHardSpheres = true;
+			setBoxWidth(simulation, 100);
+			setWallsAlongBorder(simulation);
+
+			fillBoxWithParticles(simulation, 150, 8);
+
+			setToolbarAvailableTools(simulation.toolbar, ["move"]);
+        },
+    });
+
+    var currentBoxWidth = 100;
+</script>
+
+<h2>Pressure & Volume: Boyle's Law</h2>
+
+<p>What happens when you <strong>squeeze</strong> a gas into a smaller space?</p>
+
+<p>Use the slider below to change the <strong>volume</strong> (width) of the box.</p>
+
+<script>
+	createSliderHere({
+		initialValue: 100,
+		min: 30, max: 100,
+		minLabel: "Small", maxLabel: "Large",
+		update: function(value)
+		{
+			currentBoxWidth = value;
+			setBoxWidth(sim, value);
+			setWallsAlongBorder(sim);
+			
+			// We DO NOT update the renderer bounds here. 
+			// Keeping the renderer bounds at the original max size ensures the particles 
+			// maintain a constant visual size while the box itself appears to shrink.
+		},
+	});
+</script>
+
+<p>Shrink the box and watch what happens.</p>
+
+<script>
+	cue(function() {
+		return (currentBoxWidth < 50);
+	});
+	endStep();
+</script>
+
+<p>The particles hit the walls <strong>more often</strong> because they have less room. The pressure goes up!</p>
+
+<p>Now expand the box back.</p>
+
+<script>
+	cue(function() {
+		return (currentBoxWidth > 80);
+	});
+	endStep();
+</script>
+
+<p>Bigger volume → fewer wall collisions → <strong>lower pressure</strong>.</p>
+
+<p>This inverse relationship is <strong>Boyle's Law</strong>:</p>
+
+<div class="equation">P ∝ 1/V &nbsp;&nbsp;(at constant temperature)</div>
+
+<p>Double the volume, halve the pressure. The product <strong>P × V stays roughly constant</strong> as long as the temperature doesn't change.</p>
+
+<p class="next-page-prompt">When you're ready, proceed to the next page using the arrow on the right.</p>
+
+</div>
+<div class="twoColumn">
+<script>
+	insertHere(sim.div);
+
+	createTimeSeriesHere({
+		title: "Pressure vs Time",
+		timeRange: 80,
+		yMax: 120,
+		update: function(graph) {
+			return {time: sim.time, data: [getTotalPressure(sim)]};
+		},
+	});
+</script>
+</div>
+</div>

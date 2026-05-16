@@ -1,0 +1,90 @@
+---
+title: "Excluded Volume"
+---
+<div class="page">
+<div class="stepLog twoColumn">
+
+<script>
+    var sim = createSimulation({
+        initialize: function(simulation) {
+			var p = simulation.parameters;
+			p.isOnlyHardSpheres = true;
+			p.thermostatDeterministicStrength = 0.5;
+			p.thermostatTemperature = 10;
+			setBoxWidth(simulation, 80);
+			setWallsAlongBorder(simulation);
+
+			fillBoxWithParticles(simulation, 60, 10);
+
+			setToolbarAvailableTools(simulation.toolbar, ["move", "create"]);
+        },
+    });
+
+    var currentBoxWidth = 80;
+</script>
+
+<h2>Real Particles Take Up Space</h2>
+
+<p>The ideal gas law assumes particles are <strong>infinitely small points</strong>. But real molecules have size!</p>
+
+<p>Start by adding a <em>lot</em> more particles with the create tool.</p>
+
+<script>
+	cue(function() {
+		return (sim.particles.length > 200);
+	});
+	endStep();
+</script>
+
+<p>Now <strong>shrink the box</strong> using the slider below.</p>
+
+<script>
+	createSliderHere({
+		initialValue: 80,
+		min: 20, max: 80,
+		minLabel: "Tiny", maxLabel: "Large",
+		update: function(value)
+		{
+			currentBoxWidth = value;
+			setBoxWidth(sim, value);
+			setWallsAlongBorder(sim);
+			// Maintain constant renderer bounds to prevent zooming effect
+		},
+	});
+</script>
+
+<script>
+	cue(function() {
+		return (currentBoxWidth < 30);
+	});
+	endStep();
+</script>
+
+<p>At high density, the particles are <strong>jammed together</strong>. They can't overlap; each one occupies space that is unavailable to the others.</p>
+
+<p>The pressure is <strong>much higher</strong> than the ideal gas law would predict. The <em>effective</em> volume available to each particle is less than V because the other particles are in the way.</p>
+
+<p>This is the <strong>excluded volume</strong> effect. The correction parameter <em>b</em> in the van der Waals equation accounts for this. The actual free volume is <em>V - nb</em>, where <em>n</em> is the number of particles.</p>
+
+<div class="equation">V<sub>effective</sub> = V − nb</div>
+
+<p>At low density (big box), this correction barely matters. But cram the particles together and it dominates!</p>
+
+<p class="next-page-prompt">When you're ready, proceed to the next page using the arrow on the right.</p>
+
+</div>
+<div class="twoColumn">
+<script>
+	insertHere(sim.div);
+
+	createTimeSeriesHere({
+		title: "Pressure vs Time",
+		timeRange: 80,
+		yMax: 120,
+		update: function(graph) {
+			return {time: sim.time, data: [getTotalPressure(sim)]};
+		},
+	});
+</script>
+</div>
+</div>

@@ -1,0 +1,74 @@
+---
+title: "Welcome"
+---
+<div class="page">
+<div class="stepLog twoColumn">
+
+<script>
+    var sim = createSimulation({
+        initialize: function(simulation) {
+			var p = simulation.parameters;
+			p.isOnlyHardSpheres = true;
+			setBoxWidth(simulation, 60);
+			setWallsAlongBorder(simulation);
+
+			var particleCount = 60;
+			for (var i = 0; i < particleCount; i++) {
+				var particle = new Particle();
+				randomDiscInRect(particle.position, particle.radius, simulation.boxBounds);
+				v2.set(particle.velocity, randomGaussian(), randomGaussian());
+				v2.scale(particle.velocity, particle.velocity, 2);
+				addParticle(simulation, particle);
+			}
+
+			setToolbarAvailableTools(simulation.toolbar, ["move", "create", "attract"]);
+        },
+    });
+</script>
+
+<p>Welcome! Throughout this explainer, you'll interact with <strong>particle simulations</strong> like the one on the right.</p>
+
+<p>These simulations run in real time and respond to your input. Try <strong>clicking and dragging</strong> a particle to throw it around!</p>
+
+<script>
+	cue(function() {
+		return (sim.mouse.mode === MouseMode.move);
+	});
+	endStep();
+</script>
+
+<p>Nice! You can also <strong>switch tools</strong> using the dropdown in the bottom-right corner of the simulation.</p>
+
+<p>Try the <strong>create</strong> tool to add more particles. Hold down and drag to paint particles.</p>
+
+<script>
+	cue(function()
+	{
+		return (sim.particles.length > 80);
+	});
+	endStep();
+</script>
+
+<p>Now try the <strong>attract</strong> tool, click and hold near the particles to pull them toward your cursor.</p>
+
+<script>
+	cue(function()
+	{
+		var isAttractTool = (sim.mouse.mode == MouseMode.attract);
+		return (isAttractTool && sim.mouse.leftButton.down);
+	});
+	endStep();
+</script>
+
+<p>You'll also see <strong>graphs</strong> and <strong>sliders</strong> on later pages that let you measure and control what's happening in the simulation.</p>
+
+<p class="next-page-prompt">When you're ready, proceed to the next page using the arrow on the right.</p>
+
+
+</div>
+<div class="twoColumn">
+<script>
+	insertHere(sim.div);
+</script>
+</div>
+</div>
