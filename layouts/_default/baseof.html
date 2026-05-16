@@ -4,14 +4,14 @@
 	<meta charset="utf-8">
 	<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} – {{ .Site.Title }}{{ end }}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="{{ 'assets/style.css?v=2' | relURL }}" type="text/css" media="screen">
-	<script src="{{ 'assets/scripts/functions.js?v=2' | relURL }}" type="text/javascript"></script>
-	<script src="{{ 'assets/scripts/canvas.js?v=2' | relURL }}" type="text/javascript"></script>
+	<link rel="stylesheet" href="{{ "assets/style.css?v=2" | relURL }}" type="text/css" media="screen">
+	<script src="{{ "assets/scripts/functions.js?v=2" | relURL }}" type="text/javascript"></script>
+	<script src="{{ "assets/scripts/canvas.js?v=2" | relURL }}" type="text/javascript"></script>
 </head>
 <body class="{{ if .IsHome }}isHome{{ else }}isInternal{{ end }}">
 <div class="wrapper">
 	<header>
-	    <a class="siteTitle" href="{{ '/' | relURL }}">Beyond Ideal</a>
+	    <a class="siteTitle" href="{{ "/" | relURL }}">Beyond Ideal</a>
 	</header>
 </div>
 <div id="body">
