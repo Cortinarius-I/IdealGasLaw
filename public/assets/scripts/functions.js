@@ -116,6 +116,12 @@ var NavigationInfo = new function ()
     {
         return (a.url > b.url) - (a.url < b.url);
     });
+
+    var basePath = window.HUGO_BASE_URL || "/";
+    if (basePath.endsWith("/") && basePath.length > 1) {
+        basePath = basePath.slice(0, -1);
+    }
+
     for (var page of allPages) {
         var baseUrl = parentUrl(page.url)
         var sequence = this.sequences[baseUrl];
@@ -131,7 +137,22 @@ var NavigationInfo = new function ()
         sequence.panelUrls.push(removeTrailingSlash(page.url));
     }
 
-    var currentUrl = removeTrailingSlash(window.location.pathname);
+    function toFullUrl(url) {
+        if (basePath === "/" || url.startsWith(basePath)) return url;
+        if (url === "/") return (basePath.endsWith("/") ? basePath : basePath + "/");
+        return (basePath.endsWith("/") ? basePath.slice(0, -1) : basePath) + url;
+    }
+
+    this.toFullUrl = toFullUrl;
+
+    var currentPath = removeTrailingSlash(window.location.pathname);
+    // Strip base path if it exists at the start
+    if (basePath !== "/" && currentPath.startsWith(basePath)) {
+        currentPath = currentPath.slice(basePath.length);
+    }
+    if (currentPath === "") currentPath = "/";
+
+    var currentUrl = currentPath;
     var currentBaseUrl = parentUrl(currentUrl);
     var currentSequence = this.sequences[currentBaseUrl];
     var panelIndex = currentSequence ? currentSequence.panelUrls.indexOf(currentUrl) : -1;
@@ -181,7 +202,7 @@ function createSequenceDots(sequence)
         }
         if (a.innerHTML !== "○")
         {
-            a.href = sequence.panelUrls[panelIndex];
+            a.href = NavigationInfo.toFullUrl(sequence.panelUrls[panelIndex]);
             a.classList.add("visited");
         }
     }
@@ -206,7 +227,7 @@ function makeParentElementSequenceLink(sequenceUrl)
         a.appendChild(parentElement.firstChild);
     }
     parentElement.appendChild(a);
-    a.href = sequence.panelUrls[0];
+    a.href = NavigationInfo.toFullUrl(sequence.panelUrls[0]);
 
     var sequenceDots = createSequenceDots(sequence);
     parentElement.appendChild(sequenceDots);
@@ -235,7 +256,7 @@ function thumbnailSim(simulation)
 
 function replaceAt(string, index, replacementString)
 {
-    return string.substr(0, index) + replacementString + string.substr(index + replacementString.length);
+    return string.substring(0, index) + replacementString + string.substring(index + replacementString.length);
 }
 
 // Record this panel as visited
@@ -253,17 +274,18 @@ function replaceAt(string, index, replacementString)
 // Add navigation links to page
 
 // Define the sequential order of chapters for next/prev navigation
-var chapterOrder = [
-    "/intro",
-    "/gas",
-    "/ideal",
-    "/kinetic",
-    "/real",
-    "/vanderwaals",
-    "/playground",
-];
+document.addEventListener("DOMContentLoaded", function()
+{
+    var chapterOrder = [
+        "/intro",
+        "/gas",
+        "/ideal",
+        "/kinetic",
+        "/real",
+        "/vanderwaals",
+        "/playground",
+    ];
 
-document.addEventListener("DOMContentLoaded", function() {
     var current = NavigationInfo.currentPosition;
 
     if (current.sequence.baseUrl == "/")
@@ -292,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function() {
     {
         prevUrl = current.sequence.panelUrls[current.panelIndex - 1];
     }
-    document.getElementById("leftNavigationArea").innerHTML = `<a href="${prevUrl}" title="Previous Page">«</a>`;
+    document.getElementById("leftNavigationArea").innerHTML = `<a href="${NavigationInfo.toFullUrl(prevUrl)}" title="Previous Page">«</a>`;
 
     var nextUrl;
     if (isLastPanel)
@@ -310,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function() {
         nextUrl = current.sequence.panelUrls[current.panelIndex + 1];
     }
 
-    document.getElementById("rightNavigationArea").innerHTML = `<a href="${nextUrl}" title="Next Page">»</a>`;
+    document.getElementById("rightNavigationArea").innerHTML = `<a href="${NavigationInfo.toFullUrl(nextUrl)}" title="Next Page">»</a>`;
 
     // nav bar
 

@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="{{ "assets/style.css?v=2" | relURL }}" type="text/css" media="screen">
 	<script src="{{ "assets/scripts/functions.js?v=2" | relURL }}" type="text/javascript"></script>
 	<script src="{{ "assets/scripts/canvas.js?v=2" | relURL }}" type="text/javascript"></script>
+	<script>window.HUGO_BASE_URL = "{{ "/" | relURL }}";</script>
 </head>
 <body class="{{ if .IsHome }}isHome{{ else }}isInternal{{ end }}">
 <div class="wrapper">
