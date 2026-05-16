@@ -5,14 +5,16 @@
 	<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} – {{ .Site.Title }}{{ end }}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="{{ "assets/style.css?v=2" | relURL }}" type="text/css" media="screen">
-	<script>window.HUGO_BASE_URL = "{{ "/" | relURL }}";</script>
+	{{ $basePath := urls.Parse .Site.BaseURL }}
+	<script>window.HUGO_BASE_URL = "{{ $basePath.Path }}";</script>
 	<script src="{{ "assets/scripts/functions.js?v=2" | relURL }}" type="text/javascript"></script>
 	<script src="{{ "assets/scripts/canvas.js?v=2" | relURL }}" type="text/javascript"></script>
 </head>
 <body class="{{ if .IsHome }}isHome{{ else }}isInternal{{ end }}">
 <div class="wrapper">
 	<header>
-	    <a class="siteTitle" href="{{ "/" | relURL }}">Beyond Ideal</a>
+	    {{ $basePath := urls.Parse .Site.BaseURL }}
+	    <a class="siteTitle" href="{{ $basePath.Path }}">Beyond Ideal</a>
 	</header>
 </div>
 <div id="body">
