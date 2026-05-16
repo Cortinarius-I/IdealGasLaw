@@ -1,0 +1,7 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "beyond-ideal"
+pages_build_output_dir = "public"
+
+[vars]
+HUGO_VERSION = "0.121.1"
+HUGO_ENV = "production"
